@@ -8,4 +8,5 @@ public class Attachments {
 	public String file;
 	public int size;
 	public String mimeType;
+	public String url;
 }

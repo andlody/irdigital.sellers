@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
+@Entity(name="tb_seller_brand")
 public class SellerBrand {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

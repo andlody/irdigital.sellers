@@ -34,8 +34,8 @@ public class SellerController {
 	private ISellerDocumentRepository _sellerDocumentRepository;
 	@Autowired
 	private IDocumentFormatRepository _documentFormatRepository;
-	@Autowired
-	private IRequiredSellerDocumentRepository _requiredSellerDocumentRepository;
+	//@Autowired
+	//private IRequiredSellerDocumentRepository _requiredSellerDocumentRepository;
 	@Autowired
 	private ISellerCommissionRepository _sellerCommissionRepository;
 	@Autowired
@@ -44,7 +44,7 @@ public class SellerController {
 	private ISellerEmailRepository _sellerEmailRepository;
 	
 	@PostMapping(value = "seller", produces = MediaType.APPLICATION_JSON_VALUE)
-	public String saveSeller(@RequestBody SellerRequest sellerRequest) {	
+	public SellerResponse saveSeller(@RequestBody SellerRequest sellerRequest) {	
 		
 		
 		Seller seller = CastRepository.seller(sellerRequest);
@@ -74,11 +74,11 @@ public class SellerController {
 			_sellerDocumentRepository.save(sellerDocument);
 		}
 		
-		ArrayList<RequiredSellerDocument> requiredSellerDocuments = CastRepository.requiredSellerDocument(sellerRequest,seller.id);
-		for(RequiredSellerDocument requiredSellerDocument:requiredSellerDocuments) _requiredSellerDocumentRepository.save(requiredSellerDocument);
+		//ArrayList<RequiredSellerDocument> requiredSellerDocuments = CastRepository.requiredSellerDocument(sellerRequest,seller.id);
+		//for(RequiredSellerDocument requiredSellerDocument:requiredSellerDocuments) _requiredSellerDocumentRepository.save(requiredSellerDocument);
 		
-		SellerCommission sellerCommission = CastRepository.sellerCommission(sellerRequest,seller.id);
-		_sellerCommissionRepository.save(sellerCommission);	
+		ArrayList<SellerCommission> sellerCommissions = CastRepository.sellerCommissions(sellerRequest,seller.id);
+		for(SellerCommission sellerCommission:sellerCommissions) _sellerCommissionRepository.save(sellerCommission);	
 		
 		SellerPhone sellerPhone = CastRepository.sellerPhone(sellerRequest,seller.id);
 		_sellerPhoneRepository.save(sellerPhone);
@@ -89,7 +89,7 @@ public class SellerController {
 		SellerResponse sellerResponse = new SellerResponse();
 		sellerResponse.sellerId = seller.id;
 		
-		return "holi";
+		return sellerResponse;
 	}
 	
 	protected int getDocumentFormatId(String name) {

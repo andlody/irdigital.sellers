@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
-@Entity
+@Entity(name="tb_seller_document")
 public class SellerDocument {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +21,9 @@ public class SellerDocument {
 	
 	@Column
 	public int documentFormatId;
+	
+	@Column(length=150)
+	public String documentUrl;
 	
 	@Transient
 	public String documentFormat;

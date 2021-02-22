@@ -6,14 +6,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
+@Entity(name="tb_required_seller_document")
 public class RequiredSellerDocument {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public int id;
 	
-	@Column
-	public int sellerId;
+	//@Column
+	//public int sellerId;
 	
 	@Column(length=80)
 	public String documentName;

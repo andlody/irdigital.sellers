@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
+@Entity(name="tb_seller_contact")
 public class SellerContact {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +28,5 @@ public class SellerContact {
 	public int contactTypeId;
 	
 	@Column
-	public int principal;
+	public boolean principal;
 }

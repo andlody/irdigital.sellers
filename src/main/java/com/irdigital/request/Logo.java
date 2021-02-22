@@ -7,4 +7,5 @@ public class Logo {
 	public String file;
 	public int size;
 	public String mimeType;
+	public String url;
 }

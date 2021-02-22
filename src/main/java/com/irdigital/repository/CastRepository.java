@@ -3,6 +3,8 @@ package com.irdigital.repository;
 
 import java.util.ArrayList;
 import com.irdigital.jpa.*;
+import com.irdigital.jpa.Seller.SellerStatus;
+import com.irdigital.jpa.SellerOpeningHours.WeekDays;
 import com.irdigital.request.*;
 
 
@@ -20,6 +22,9 @@ public class CastRepository {
 		
 		seller.companyLogo 			= (sellerRequest.content.logo.length>0)?sellerRequest.content.logo[0].name:null;
 		seller.companyDescription	= sellerRequest.content.descriptionCompany;
+		
+		seller.returnPolicy = "";
+		seller.statusId = SellerStatus.NUEVO_REGISTRO;
 		
 		return seller;
 	}
@@ -57,7 +62,7 @@ public class CastRepository {
 		for(HourAttend hourAttend : sellerRequest.logistics.hourAttend) {
 			SellerOpeningHours sellerOpeningHour = new SellerOpeningHours();
 			sellerOpeningHour.sellerId 	= sellerId;
-			sellerOpeningHour.day 		= Integer.parseInt(""+hourAttend.id);
+			sellerOpeningHour.day 		= getWeekDays(Integer.parseInt(""+hourAttend.id));
 			sellerOpeningHour.startTime  	= hourAttend.from;
 			sellerOpeningHour.endTime  	= hourAttend.to;
 			
@@ -66,6 +71,19 @@ public class CastRepository {
 		return sellerOpeningHours;
 	}
 	
+	public static WeekDays getWeekDays(int i) {
+		WeekDays day = WeekDays.LUN;
+		switch(i){
+			case 1:day = WeekDays.LUN;break;
+			case 2:day = WeekDays.MAR;break;
+			case 3:day = WeekDays.MIE;break;
+			case 4:day = WeekDays.JUE;break;
+			case 5:day = WeekDays.VIE;break;
+			case 6:day = WeekDays.SAB;break;
+			case 7:day = WeekDays.DOM;break;
+		}
+		return day;
+	}
 	
 	public static SellerAddress sellerAddress(SellerRequest sellerRequest,int sellerId) {
 		
@@ -73,6 +91,8 @@ public class CastRepository {
 		sellerAddress.sellerId = sellerId;
 		sellerAddress.address = sellerRequest.logistics.address;
 		sellerAddress.addressReference = sellerRequest.logistics.reference;
+		
+		sellerAddress.addressTypeId=1;// Aqui se debe reemplazar por el tipo que llegue por el JSON
 		
 		sellerAddress.department = sellerRequest.logistics.location.departmentCode;
 		sellerAddress.province = sellerRequest.logistics.location.provinceCode;
@@ -160,9 +180,21 @@ public class CastRepository {
 			sellerDocument.sellerId = sellerId;
 			sellerDocument.documentName 	= attachments.name;
 			sellerDocument.documentFormat 	= attachments.format;
+			sellerDocument.documentUrl 	= attachments.url;
 			
 			sellerDocuments.add(sellerDocument);
 		}
+		
+		for(Logo logo : sellerRequest.content.logo) {
+			SellerDocument sellerDocument = new SellerDocument();
+			sellerDocument.sellerId = sellerId;
+			sellerDocument.documentName 	= logo.name;
+			sellerDocument.documentFormat 	= logo.format;
+			sellerDocument.documentUrl 	= logo.url;
+			
+			sellerDocuments.add(sellerDocument);
+		}
+		
 		return sellerDocuments;
 	}
 	
@@ -172,7 +204,7 @@ public class CastRepository {
 		
 		for(Attachments attachments : sellerRequest.accountant.attachments) {
 			RequiredSellerDocument requiredSellerDocument = new RequiredSellerDocument();
-			requiredSellerDocument.sellerId = sellerId;
+			//requiredSellerDocument.sellerId = sellerId;
 			requiredSellerDocument.documentName 		= attachments.name;
 			requiredSellerDocument.maximunSizeAllowed 	= attachments.size;
 			requiredSellerDocument.allowedFormats		= "";
@@ -182,14 +214,27 @@ public class CastRepository {
 		return requiredSellerDocuments;
 	}
 	
-	
-	public static SellerCommission sellerCommission(SellerRequest sellerRequest,int sellerId) {
+	public static ArrayList<SellerCommission> sellerCommissions(SellerRequest sellerRequest,int sellerId) {
+		
+		ArrayList<SellerCommission> sellerCommissions = new ArrayList<SellerCommission>();
 		
 		SellerCommission sellerCommission = new SellerCommission();
 		sellerCommission.sellerId = sellerId;
 		sellerCommission.commission = Integer.parseInt(sellerRequest.accountant.commission.replace("%", "").replace(" ", ""));
+		sellerCommission.commissionTypeId = 1;
 		
-		return sellerCommission;
+		sellerCommissions.add(sellerCommission);
+		
+		for(String taxe : sellerRequest.accountant.taxes) {
+			SellerCommission _sellerCommission = new SellerCommission();
+			_sellerCommission.sellerId = sellerId;
+			_sellerCommission.commissionTypeId=Integer.parseInt(taxe);
+			_sellerCommission.commission=_sellerCommission.commissionTypeId;
+			
+			sellerCommissions.add(_sellerCommission);
+		}
+		
+		return sellerCommissions;
 	}
 	
 	public static SellerPhone sellerPhone(SellerRequest sellerRequest,int sellerId) {
@@ -197,6 +242,7 @@ public class CastRepository {
 		SellerPhone sellerPhone = new SellerPhone();
 		sellerPhone.sellerId = sellerId;
 		sellerPhone.phoneNumber = sellerRequest.general.principalPhone;
+		sellerPhone.phoneTypeId=1;
 		
 		return sellerPhone;
 	}
@@ -206,6 +252,7 @@ public class CastRepository {
 		SellerEmail sellerEmail = new SellerEmail();
 		sellerEmail.sellerId = sellerId;
 		sellerEmail.email = sellerRequest.general.principalEmail;
+		sellerEmail.emailTypeId=1;
 		
 		return sellerEmail;
 	}

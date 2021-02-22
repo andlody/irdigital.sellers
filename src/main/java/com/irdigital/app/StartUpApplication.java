@@ -25,6 +25,6 @@ public class StartUpApplication {
 	@RequestMapping("/")
 	@ResponseBody
 	String home() {
-		return "<center><br><strong>xIrDigital - SellerCenter</strong><br><br> <a href='./swagger-ui.html'>Swagger</a></center>";
+		return "<center><br><strong>IrDigital - SellerCenter</strong><br><br> <a href='./swagger-ui.html'>Swagger</a></center>";
 	}
 }

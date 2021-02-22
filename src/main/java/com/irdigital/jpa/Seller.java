@@ -2,11 +2,15 @@ package com.irdigital.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="tb_seller")
 public class Seller {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,5 +41,10 @@ public class Seller {
 	public String companyDescription;
 	
 	@Column
-	public int statusId;
+	@Enumerated(value = EnumType.STRING)
+	public SellerStatus statusId;
+	
+	public static enum SellerStatus {
+		NUEVO_REGISTRO, REGISTRADO;
+	}
 }
